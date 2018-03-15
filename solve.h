@@ -6,6 +6,7 @@
 #define REPLY_CHALLENGE_SOLVE_H
 
 #include "datastructure.h"
+#include <stdlib.h>
 
 void solve(handle *h);
 

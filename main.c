@@ -5,11 +5,9 @@
 #include "input.h"
 #include "output.h"
 
-#define FILENAME "input.txt"
-
 int main(int argc, char **argv){
     handle *h;
-    h=readInput(FILENAME);
+    h=readInput("first_adventure.in");
 
     solve(h);
 
