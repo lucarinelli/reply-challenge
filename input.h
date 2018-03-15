@@ -6,5 +6,10 @@
 #define REPLY_CHALLENGE_INPUT_H
 
 #include "datastructure.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+handle *readInput(char *name);
 
 #endif //REPLY_CHALLENGE_INPUT_H

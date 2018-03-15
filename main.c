@@ -5,7 +5,12 @@
 #include "input.h"
 #include "output.h"
 
-int main() {
+#define FILENAME "input.txt"
+
+int main(int argc, char **argv){
+    handle *h;
+    h=readInput(FILENAME);
+
     printf("Andrea Bruno, bono!\n");
     return 0;
 }
