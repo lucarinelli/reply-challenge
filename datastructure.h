@@ -5,6 +5,8 @@
 #ifndef PROJECT_DATASTRUCTURE_H
 #define PROJECT_DATASTRUCTURE_H
 
+#include "St.h"
+
 typedef struct handle handle;
 typedef struct provider provider;
 typedef struct project project;
@@ -16,6 +18,7 @@ struct handle{
     project **projects;
     char **services;
     char **countries;
+    ST st_countries;
 };
 
 struct provider{
