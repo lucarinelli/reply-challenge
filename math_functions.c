@@ -13,7 +13,7 @@ float overall_quality_score(float avg_project_latency, float ov_avail_index,floa
     return tp;
 }
 
-float avg_pr_latency(float *lat_per_region, int *n_service_units, int n_regions){
+float avg_pr_latency(int *lat_per_region, int *n_service_units, int n_regions){
     float as=0,ur=0,tmp=0;
     for (int i = 0; i <n_regions ; ++i) {
         ur+=n_service_units[i];
@@ -60,4 +60,13 @@ float fine(int penalty_base,int units_needed, int sum_alloc_units){
 
 int min(int x,int y){
     return (x<y?x:y);
+}
+
+float score(int n_projects,handle *h){
+    float score=0,tp,fine;
+    tp=overall_quality_score(avg_pr_latency())
+    for (int i = 0; i <h->P_n_proj ; ++i) {
+        score+=(1000000000)/(tp+fine);
+    }
+    return score;
 }
