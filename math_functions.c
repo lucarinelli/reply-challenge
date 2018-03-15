@@ -4,6 +4,19 @@
 
 #include "math_functions.h"
 
+float score(handle *h, order *o, project *p){
+    float score=0,tp=0,f,avg,ov,tot;
+    avg=avg_pr_latency(h,p,o);
+    ov=ov_avail(h,p,o);
+    tot=tot_pro_cost(h,p,o);
+
+    tp=avg/ov*tot;
+    f=fine(h,p,o);
+
+    score=(1000000000)/(tp+f);
+    return score;
+}
+
 float overall_quality_score(float avg_project_latency, float ov_avail_index,float tot_project_cost){
     float tp;
     if(ov_avail_index!=0)
@@ -13,60 +26,68 @@ float overall_quality_score(float avg_project_latency, float ov_avail_index,floa
     return tp;
 }
 
-float avg_pr_latency(int *lat_per_region, int *n_service_units, int n_regions){
-    float as=0,ur=0,tmp=0;
-    for (int i = 0; i <n_regions ; ++i) {
-        ur+=n_service_units[i];
-    }
-    if(ur!=0){
-        for (int i = 0; i <n_regions ; ++i) {
-            tmp+=(n_service_units[i])*(lat_per_region[i]);
+float avg_pr_latency(handle *h, project *p, order *o){
+    float as=0,ur=0,lur=0;
+    int i;
+
+    order *tmp;
+    for(tmp=o;tmp!=NULL;tmp=tmp->next)
+        for(i=0;i<h->S_n_serv;i++)
+            ur+=tmp->pack_n*h->providers[tmp->provider_id]->regions[tmp->region_id]->units_per_serv[i];
+
+    for(tmp=o;tmp!=NULL;tmp=tmp->next)
+        for(i=0;i<h->S_n_serv;i++)
+            lur+=h->providers[tmp->provider_id]->regions[tmp->region_id]->latency_per_coun[p->country]*(tmp->pack_n*h->providers[tmp->provider_id]->regions[tmp->region_id]->units_per_serv[i]);
+    if(ur==0)return 0;
+    return lur/ur;
+}
+
+float ov_avail(handle *h, project *p, order *o){
+    float overall,sum=0,availability=0,qi,qiq,tmpqi;
+    int i;
+    order *tmp;
+
+    for(i=0;i<h->S_n_serv;i++){
+        qi=0;
+        qiq=0;
+        for(tmp=o;tmp!=NULL;tmp=tmp->next){
+            tmpqi=tmp->pack_n*h->providers[tmp->provider_id]->regions[tmp->region_id]->units_per_serv[i];
+            qi+=tmpqi;
+            qiq+=tmpqi*tmpqi;
         }
-        as=tmp/ur;
-    } else
-        as=0;
-    return as;
+        qi=qi*qi;
+
+        sum+=qi/qiq;
+    }
+
+    return sum/h->S_n_serv;
 }
 
-float ov_avail_index(int *units_bought_reg,int n_regions){
-    float ov_ail,num,num_tmp=0,den=0;
-    for (int i = 0; i <n_regions ; ++i) {
-        num_tmp+=units_bought_reg[i];
-        den+=(units_bought_reg[i])*units_bought_reg[i];
+float tot_pro_cost(handle *h, project *p, order *o){
+    order *tmp;
+    float sum=0;
+    for(tmp=o;tmp!=NULL;tmp=tmp->next){
+        sum+=h->providers[tmp->provider_id]->regions[tmp->region_id]->package_unit_cost*tmp->pack_n;
     }
-    if(den!=0){
-        num=num_tmp*num_tmp;
-        ov_ail=num/den;
-    }
-    else
-        ov_ail=0;
-    return ov_ail;
+    return sum;
 }
 
-float tot_pro_cost(float package_fee,int min_pack, int pack_bought){ //?
-    float tot=pack_bought*package_fee*min_pack;
-    return tot;
-}
+float fine(handle *h, project *p, order *o){
+    float fine,fines;
+    order *tmp;
+    int sunits,i;
 
-float fine(int penalty_base,int units_needed, int sum_alloc_units){
-    float fine;
-    if(units_needed!=0){
-        fine=penalty_base*((units_needed-min(units_needed,sum_alloc_units))/units_needed);
+    for(i=0;i<h->S_n_serv;i++){
+        fines = 0;
+        for (tmp = o; tmp != NULL; tmp = tmp->next) {
+            sunits += h->providers[tmp->provider_id]->regions[tmp->region_id]->units_per_serv[i] * tmp->pack_n;
+        }
+        fines = p->base_penalty * (p->units_per_service[i] - min(sunits,p->units_per_service[i])) / p->units_per_service[i];
     }
-    else
-        fine=0;
+
     return fine;
 }
 
 int min(int x,int y){
     return (x<y?x:y);
-}
-
-float score(int n_projects,handle *h){
-    float score=0,tp,fine;
-    tp=overall_quality_score(avg_pr_latency())
-    for (int i = 0; i <h->P_n_proj ; ++i) {
-        score+=(1000000000)/(tp+fine);
-    }
-    return score;
 }
