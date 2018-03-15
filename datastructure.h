@@ -11,6 +11,7 @@ typedef struct handle handle;
 typedef struct provider provider;
 typedef struct project project;
 typedef struct region region;
+typedef struct order order;
 
 struct handle{
     int V_n_prov, S_n_serv, C_n_coun, P_n_proj;
@@ -32,6 +33,7 @@ struct project{
     char *country_name;
     int country;//reference intera? change to pointer?
     int *units_per_service;
+    order *orders;
 };
 
 struct region{
@@ -40,6 +42,11 @@ struct region{
     float package_unit_cost;
     int *units_per_serv;
     int *latency_per_coun;
+};
+
+struct order{
+    order *next;
+    int provider_id, region_id, pack_n;
 };
 
 #endif //PROJECT_DATASTRUCTURE_H
