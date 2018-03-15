@@ -11,6 +11,9 @@ int main(int argc, char **argv){
     handle *h;
     h=readInput(FILENAME);
 
+    solve(h);
+
+    output(h);
     printf("Andrea Bruno, bono!\n");
     return 0;
 }

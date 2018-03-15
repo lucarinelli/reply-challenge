@@ -12,7 +12,11 @@ void output(handle *h){
     int i;
 
     for(i=0;i<h->P_n_proj;i++){
-
-        fprintf(output,"%d",)
+        order *tmp;
+        tmp=h->projects[i]->orders;
+        if(tmp==NULL){printf("\n");continue;}
+        for(;tmp!=NULL;tmp=tmp->next){
+            fprintf(output,"%d %d %d",tmp->provider_id,tmp->region_id,tmp->pack_n);
+        }
     }
 }

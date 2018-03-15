@@ -7,4 +7,6 @@
 
 #include "datastructure.h"
 
+void solve(handle *h);
+
 #endif //REPLY_CHALLENGE_SOLVE_H
