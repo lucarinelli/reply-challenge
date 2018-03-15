@@ -3,6 +3,7 @@
 //
 
 #include "input.h"
+#include "St.h"
 
 handle *readInput(char *name){
     FILE *input;
@@ -26,8 +27,12 @@ handle *readInput(char *name){
 
     h->countries=(char**)malloc(sizeof(char*)*h->C_n_coun);
     if(h->countries==NULL)printf("ERROR 2");
+
+    h->st_countries=STinit(h->C_n_coun);
+
     for(i=0; i<h->C_n_coun; i++){
         fscanf(input,"%s",tmp);
+        STinsert(h->st_countries, tmp);
         h->countries[i]=strdup(tmp);
     }
 
@@ -74,6 +79,7 @@ handle *readInput(char *name){
 
         fscanf(input,"%d %s",&h->projects[i]->base_penalty,tmp);
 
+        h->projects[i]->country=STNomeIndice(h->st_countries, tmp);
         h->projects[i]->country_name=strdup(tmp);
 
         h->projects[i]->units_per_service=(int*)malloc(sizeof(int)*h->S_n_serv);
